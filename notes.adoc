@@ -1,0 +1,55 @@
+NOTES
+
+== TODO
+Need to fix 2d vectors so x and z aren't reversed +
+Need to clean up systems and split based on module +
+Need to create dedicated render/animation module and move functions into it +
+[line-through]#Need to fix sprite facing issue- sprite needs to face at "screen", not directly at the posistion of the camera.
+Needs to face at the plane that the camera is on, not the camera itself.# +
+Test whether it looks better to have the sprite face straight at the camera or be vertically aligned with map. Maybe have limit, so sprites match the vertical rotation of the camera on a curve, so they gradually angle away from the camera as the camera gets closer to pointing directly downward. +
+Rework overall game state +
+Organize systems into sets +
+
+.Possible Optimizations
+* In "AnimationLibrary" and "TileList" replace HashMap with fnv::FnvHashMap. Less safe for outward facing applications but faster.
+* Anywhere I use strings for hashmap keys ("AnimationLibrary") change from String to &str. Faster but not dynamic, ie can't be changed.
+
+== 06/29 1:30
+Implemented UpdateUnitRenderLocation, UnitMap +
+Need to implement synching Location component function in unit with UnitMap in map +
+use Changed<T> in query, search change detection in bevy unoffical cheat book +
+unit will update own location, function will automatically synch with the UnitMap
+
+== 07/01 1:30
+Implemented synch_unit_map, TestTimer +
+Units now automatically synch the UnitMap with their internal location +
+Need to implement moving unit with mouse next time +
+After that, rewrite unit declartion to support multiple units +
+Implement unit collision function that returns whether a space is valid for a unit to move to
+
+== 07/02 2:30
+Fixed it so cursor moves when camera is moved +
+Still need to add key_released events to update cursor position on last frame of camera movment +
+then move on to above
+
+== 07/03 1:00
+Added key released events +
+
+.Started implementing unit selection
+* Added UpdateSelectedUnit event
+* Added SelectedUnit component
+* Currently has selected unit and targeted unit as well as locations for each. May need to rework a bit
+* Wrote event sending code in select_tile(), but still need to add recieving event code
+
+== 07/08 and 07/10 2:00 and 1:30
+Added receiver event for select_tile(). +
+Decided to work on animation before continuing with unit selection. Imported Sprite_3d crate. Started implementing it in unit.rs, but need to implement bevy state to get it working as the sprite image needs to be loaded before being converted to a model.
+
+== 07/11 2:00
+Finished implementing Sprite_3d and a little bit of bevy state. Next time need to get animations working, then back to moving a unit around the map.
+
+== 07/12 and 07/13 2:00 and 1:00
+Rewrote animation into AnimationLibrary. Learned the builder design pattern and applied it to AnimationLibrary. Can finally move on back to visually indicating that a unit is selected.
+
+== 07/19 1:00
+Started implementing selected unit state in main. Handle state changes in main by reading events sent within other systems. In this case, reading the unitselected event should change the state to the selected unit state
