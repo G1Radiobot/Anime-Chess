@@ -264,7 +264,7 @@ fn editor_controls() -> EditorControls {
 fn done_load_sprite
 (
     asset_server: Res<AssetServer>,
-    assets: Res<ImageAsset>,
+    assets: Res<SpriteAsset>,
     mut next_state: ResMut<NextState<LoadingState>>
 )
 {

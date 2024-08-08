@@ -191,11 +191,14 @@ pub struct UpdateUnitRenderLocation(Entity);
 
 ///Hello!
 #[derive(Resource, Default, Clone)]
-pub struct ImageAsset
+pub struct SpriteAsset
 {
     pub image: Handle<Image>,
     pub layout: Handle<TextureAtlasLayout>
 }
+
+#[derive(Resource, Default, Clone)]
+pub struct SpriteAssetLibrary(HashMap<String, SpriteAsset>);
 
 pub fn face_camera
 (
@@ -226,7 +229,7 @@ pub fn init_unit_sprite
     asset_server: Res<AssetServer>
 )
 {
-    let pic: Handle<Image> = asset_server.load("PlaceholderMSprite.png");
+    let pic: Handle<Image> = asset_server.load("PlayerGuinevere.png");
     let layout: Handle<TextureAtlasLayout> = layouts.add
     (TextureAtlasLayout::from_grid
         (
@@ -237,21 +240,21 @@ pub fn init_unit_sprite
             None
         )
     );
-    cmd.insert_resource(ImageAsset{image: pic, layout});
+    cmd.insert_resource(SpriteAsset{image: pic, layout});
 }
 
 
 pub fn init_unit_model
 (
     mut cmd: Commands, 
-    image_server: Res<ImageAsset>,
+    image_server: Res<SpriteAsset>,
     //mut meshs: ResMut<Assets<Mesh>>, 
     //mut materials: ResMut<Assets<StandardMaterial>>,
     mut update_unit_render_location: EventWriter<UpdateUnitRenderLocation>,
     mut sprite_params: Sprite3dParams,
 )
 {
-    let sprite_name: String = "PlaceholderMSprite.png".into();
+    let sprite_name: String = "PlayerGuinevere.png".into();
     let atlas = TextureAtlas 
     {
         layout: image_server.layout.clone(),
@@ -273,7 +276,7 @@ pub fn init_unit_model
     let me = cmd.spawn((UnitBundle
     {
         is_unit: IsUnit,
-        unit_name: ObjName("Martin".into()),
+        unit_name: ObjName("Guinevere".into()),
         team: Team(0),
         movement: Movement(5.0),
         health: Health
