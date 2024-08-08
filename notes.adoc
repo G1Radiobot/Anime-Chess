@@ -53,3 +53,6 @@ Rewrote animation into AnimationLibrary. Learned the builder design pattern and 
 
 == 07/19 1:00
 Started implementing selected unit state in main. Handle state changes in main by reading events sent within other systems. In this case, reading the unitselected event should change the state to the selected unit state
+
+== 08/07 2:30
+Missed some history here. Migrated to bevy 14.1, got version control going with github, implemented substates, created new place holder sprites, added cancel event, reworked the event handler a bit, and implemented veeeery basic movement. Next time, need to spawn in a second unit to test collisions, then move on to figuring out and rendering movement ranges. 

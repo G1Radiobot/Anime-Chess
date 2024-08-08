@@ -32,8 +32,6 @@ pub struct SelectedUnit
 {
     selected_unit: Option<Entity>,
     selected_loc: Option<Location>,
-    targeted_unit: Option<Entity>,
-    targeted_loc: Option<Location>
 }
 
 #[derive(Event)]
@@ -273,31 +271,39 @@ pub fn FIELD_unit_selected
 
 pub fn movement
 (
-    sel_unit_qry: Query<&SelectedUnit>,
-    mut unit_qry: Query<(&mut Location, &Movement)>,
+    mut sel_unit_qry: Query<&mut SelectedUnit>,
+    mut unit_map_qry: Query<&mut UnitMap>,
+    mut unit_qry: Query<(&mut Location, &Movement, Entity)>,
     mut unit_on_tile: EventReader<UnitOnTile>
 )
 {
-    for event in unit_on_tile.read()
+    //println!("movement");
+    if let Ok(mut unit_map) = unit_map_qry.get_single_mut()
     {
-        if event.0.is_none()
+        for event in unit_on_tile.read()
         {
-            if let Some(unit) = sel_unit_qry.single().selected_unit
+            if event.0.is_none()
             {
-                if let Ok((mut loc, _movement)) = unit_qry.get_mut(unit)
+                let mut selected_unit = sel_unit_qry.single_mut();
+                if let Some(unit) = selected_unit.selected_unit
                 {
-                    if let Some(new_loc) = event.1
+                    if let Ok((mut loc, _movement, entity)) = unit_qry.get_mut(unit)
                     {
-                        *loc = new_loc;
+                        if let Some(new_loc) = event.1
+                        {
+                            unit_map[loc.1][loc.0] = None;
+                            *loc = new_loc;
+                            //unit_map[loc.1][loc.0] = Some(entity);
+                            selected_unit.selected_loc = Some(new_loc);
+                        }
                     }
                 }
+            } else 
+            {
+                println!("Play negative noise. Can't stand here.")
             }
-        } else 
-        {
-            println!("Play negative noise. Can't stand here.")
         }
-    }
-
+    }   
 
 }
 

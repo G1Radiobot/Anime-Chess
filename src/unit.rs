@@ -350,18 +350,13 @@ pub fn animate_sprites
 /// todo Probably needs to be replaced with a dedicated rendering/animation module
 pub fn update_render_location
 (
-    mut qry: Query<(&mut Transform, &Location), With<ObjName>>,
-    mut update_unit_render_location: EventReader<UpdateUnitRenderLocation>
+    mut qry: Query<(&mut Transform, &Location), (With<ObjName>, Changed<Location>)>,
 )
 {
-    for event in update_unit_render_location.read()
+    for (mut transform, loc) in qry.iter_mut()
     {
-        if let Ok((mut transform, loc)) = qry.get_mut(event.0)
-        {
-            transform.translation = Vec3::new(loc.0 as f32, 1.1, loc.1 as f32)
-        } else {panic!("Somehow no transform and or location???")};
+        transform.translation = Vec3::new(loc.0 as f32, 1.1, loc.1 as f32)
     }
-
 }
 
 //Just moves all units with TestTimer components one to the right each frame
