@@ -229,7 +229,14 @@ pub fn init_unit_sprite
     asset_server: Res<AssetServer>
 )
 {
-    let pic: Handle<Image> = asset_server.load("PlayerGuinevere.png");
+    let pic_name: [String; 4] = ["PlayerGuinevere".into(), "EnemyGuinevere".into(), "AlliedGuinevere".into(), "NeutralGuinevere".into()];
+    let pic: [Handle<Image>; 4];
+    let mut x = 0;
+    for name in pic_name
+    [
+        pic[x] = 
+        x++;
+    ]
     let layout: Handle<TextureAtlasLayout> = layouts.add
     (TextureAtlasLayout::from_grid
         (
@@ -240,7 +247,12 @@ pub fn init_unit_sprite
             None
         )
     );
-    cmd.insert_resource(SpriteAsset{image: pic, layout});
+    let sprite_list: SpriteAssetLibrary = SpriteAssetLibrary(HashMap::new());
+    for x in pic
+    {
+        sprite_list.0.insert(x, layout);
+    }
+    cmd.insert_resource(sprite_list);
 }
 
 
