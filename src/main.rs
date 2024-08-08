@@ -197,6 +197,10 @@ fn main() -> Result<(), String> {
                     FIELD_unit_selected,
                 )
                     .in_set(Player::Field),
+                (
+                    movement
+                )
+                    .in_set(Player::Movement),
                 debug_selected_unit,
             //camera
                 move_camera

@@ -246,7 +246,7 @@ pub fn tile_select
             unit_on_tile.send(UnitOnTile(Some(unit), Some(Location(x, z))));
         } else 
         {
-            unit_on_tile.send(UnitOnTile(None, None));
+            unit_on_tile.send(UnitOnTile(None, Some(Location(x, z))));
         }
     }
 }
@@ -273,9 +273,31 @@ pub fn FIELD_unit_selected
 
 pub fn movement
 (
-    //mut unit_qry: Query<>
+    sel_unit_qry: Query<&SelectedUnit>,
+    mut unit_qry: Query<(&mut Location, &Movement)>,
+    mut unit_on_tile: EventReader<UnitOnTile>
 )
 {
+    for event in unit_on_tile.read()
+    {
+        if event.0.is_none()
+        {
+            if let Some(unit) = sel_unit_qry.single().selected_unit
+            {
+                if let Ok((mut loc, _movement)) = unit_qry.get_mut(unit)
+                {
+                    if let Some(new_loc) = event.1
+                    {
+                        *loc = new_loc;
+                    }
+                }
+            }
+        } else 
+        {
+            println!("Play negative noise. Can't stand here.")
+        }
+    }
+
 
 }
 
