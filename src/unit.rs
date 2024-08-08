@@ -198,7 +198,7 @@ pub struct SpriteAsset
 }
 
 #[derive(Resource, Default, Clone)]
-pub struct SpriteAssetLibrary(HashMap<String, SpriteAsset>);
+pub struct SpriteAssetLibrary(pub HashMap<String, SpriteAsset>);
 
 pub fn face_camera
 (
@@ -229,14 +229,16 @@ pub fn init_unit_sprite
     asset_server: Res<AssetServer>
 )
 {
-    let pic_name: [String; 4] = ["PlayerGuinevere".into(), "EnemyGuinevere".into(), "AlliedGuinevere".into(), "NeutralGuinevere".into()];
-    let pic: [Handle<Image>; 4];
+    const LIST_LENGTH: usize = 4;
+    let pic_name: [String; LIST_LENGTH] = ["PlayerGuinevere".into(), "EnemyGuinevere".into(), "AlliedGuinevere".into(), "NeutralGuinevere".into()];
+    let mut pic: Vec<Handle<Image>> = Vec::new();
     let mut x = 0;
-    for name in pic_name
-    [
-        pic[x] = 
-        x++;
-    ]
+    while x < pic_name.len()
+    {
+        println!("{}", pic_name[x].clone() + ".png");
+        pic.push(asset_server.load(pic_name[x].clone() + ".png"));
+        x += 1;
+    }
     let layout: Handle<TextureAtlasLayout> = layouts.add
     (TextureAtlasLayout::from_grid
         (
@@ -247,10 +249,12 @@ pub fn init_unit_sprite
             None
         )
     );
-    let sprite_list: SpriteAssetLibrary = SpriteAssetLibrary(HashMap::new());
-    for x in pic
+    let mut sprite_list: SpriteAssetLibrary = SpriteAssetLibrary(HashMap::new());
+    x = 0;
+    while x < pic.len()
     {
-        sprite_list.0.insert(x, layout);
+        sprite_list.0.insert(pic_name[x].clone(), SpriteAsset{image: pic[x].clone(), layout: layout.clone()});
+        x += 1;
     }
     cmd.insert_resource(sprite_list);
 }
@@ -259,17 +263,17 @@ pub fn init_unit_sprite
 pub fn init_unit_model
 (
     mut cmd: Commands, 
-    image_server: Res<SpriteAsset>,
+    image_server: Res<SpriteAssetLibrary>,
     //mut meshs: ResMut<Assets<Mesh>>, 
     //mut materials: ResMut<Assets<StandardMaterial>>,
     mut update_unit_render_location: EventWriter<UpdateUnitRenderLocation>,
     mut sprite_params: Sprite3dParams,
 )
 {
-    let sprite_name: String = "PlayerGuinevere.png".into();
-    let atlas = TextureAtlas 
+    let sprite_name: String = "NeutralGuinevere".into();
+    let atlas = TextureAtlas
     {
-        layout: image_server.layout.clone(),
+        layout: image_server.0[&sprite_name.clone()].layout.clone(),
         index: 0,
     };
 
@@ -296,7 +300,7 @@ pub fn init_unit_model
             ..default()
         },
         loc: Location(7, 9),
-        sprite: Sprite(sprite_name),
+        sprite: Sprite(sprite_name.clone()),
         /*
         model: PbrBundle
         {
@@ -312,7 +316,7 @@ pub fn init_unit_model
     },
     Sprite3d
     {
-        image: image_server.image.clone(),
+        image: image_server.0[&sprite_name].image.clone(),
         pixels_per_metre: 16.,
 
         ..default()
@@ -334,6 +338,7 @@ pub fn init_unit_model
     }
     */
     )).id();
+    println!("Checkpoint 1");
     update_unit_render_location.send(UpdateUnitRenderLocation(me));
 }
 

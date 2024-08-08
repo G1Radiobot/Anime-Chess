@@ -56,3 +56,6 @@ Started implementing selected unit state in main. Handle state changes in main b
 
 == 08/07 2:30
 Missed some history here. Migrated to bevy 14.1, got version control going with github, implemented substates, created new place holder sprites, added cancel event, reworked the event handler a bit, and implemented veeeery basic movement. Next time, need to spawn in a second unit to test collisions, then move on to figuring out and rendering movement ranges. Don't forget to create a branch before writing more code!
+
+== 08/08 2:00
+Started working on spawning more units. Made placeholders for Guinvere in the other team colors and changed ImageAsset into SpriteAssetLibrary, which stores a vector of sprites that are being used in the game. Next time need to edit init_unit to actually spawn multiple units.

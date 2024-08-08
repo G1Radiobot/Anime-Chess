@@ -264,11 +264,22 @@ fn editor_controls() -> EditorControls {
 fn done_load_sprite
 (
     asset_server: Res<AssetServer>,
-    assets: Res<SpriteAsset>,
+    assets: Res<SpriteAssetLibrary>,
     mut next_state: ResMut<NextState<LoadingState>>
 )
 {
-    if asset_server.get_load_state(assets.image.id()) == Some(LoadState::Loaded)
+    let mut done_flag = false;
+    for (_name, sprite_layout) in assets.0.iter()
+    {
+        if asset_server.get_load_state(sprite_layout.image.id()) == Some(LoadState::Loaded)
+        {
+            done_flag = true;
+        } else 
+        {
+            done_flag = false;
+        }
+    }
+    if done_flag
     {
         next_state.set(LoadingState::MainLoop)
     }
